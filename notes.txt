@@ -1,7 +1,9 @@
 To fix/add
 
-writing log into crypted file
-see that no key for a while bring new time stamp
+write the log in a non readable format
+
+
+
 
 
 

