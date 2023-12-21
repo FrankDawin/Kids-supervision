@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import tkinter as tk
-import main
+import keylog
 from threading import Thread
 import keyboard
+
 
 
 class GUI:
@@ -13,8 +16,11 @@ class GUI:
         self.window.iconbitmap('camera.ico')
         self.make_content()
         self.add_GUI_hotkey()
+
+        # self.exit_event = threading.Event()
         self.keyboard_thread = Thread(target=self.start_logger)
         self.keyboard_thread.start()
+
         self.window.mainloop()
 
     def make_content(self):
@@ -26,8 +32,7 @@ class GUI:
         # self.path_label.pack(pady=10)
 
     def start_logger(self):
-        """input output"""
-        self.kl = main.Logger()  # create the logger instance
+        self.kl = keylog.Logger()  # create the logger instance
         self.kl.start()  # start the logger
 
     def add_GUI_hotkey(self):
@@ -53,6 +58,11 @@ class GUI:
         color = "green" if self.kl.activated else "red"
         self.button.configure(bg=color)
 
+    def closing_thread(self):
+        """input output"""
+        self.keyboard_thread.join()
+        self.window.destroy()
+
 if __name__ == "__main__":
-    a = GUI()
+    pass
 
